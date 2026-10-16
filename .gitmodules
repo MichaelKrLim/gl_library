@@ -1,4 +1,0 @@
-[submodule "include/mio"]
-	path = include/mio
-	url = https://github.com/mandreyel/mio.git
-	branch = master
