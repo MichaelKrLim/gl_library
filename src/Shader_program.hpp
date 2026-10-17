@@ -9,7 +9,7 @@ class Shader_program
 {
 	public:
 
-	template <std::size_t... shader_variants>
+	template <Shader_type... shader_variants>
 	explicit Shader_program(Shader<shader_variants>... shaders) noexcept;
 	~Shader_program() noexcept;
 

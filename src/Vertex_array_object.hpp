@@ -24,11 +24,13 @@ class Vertex_array_object
 	~Vertex_array_object() noexcept;
 
 	void bind() noexcept;
+	void draw() noexcept;
 
 	private:
 
 	std::size_t next_free_vertex_attribute=0;
-	unsigned vao, vbo, ebo;
+	unsigned vao=0, vbo=0, ebo=0;
+	std::size_t num_vertices_to_draw=0;
 };
 
 #include "Vertex_array_object.tpp"

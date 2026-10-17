@@ -43,8 +43,8 @@ int main()
 	};
 
 	Shader_program shader_program(
-		Shader<GL_VERTEX_SHADER>(std::filesystem::path{"/home/michael/coding/projects/gl_lib/src/vertex_shader.glsl"}),
-		Shader<GL_FRAGMENT_SHADER>(std::filesystem::path{"/home/michael/coding/projects/gl_lib/src/fragment_shader.glsl"})
+		Shader<Shader_type::vertex>(std::filesystem::path{"/home/michael/coding/projects/gl_lib/src/vertex_shader.glsl"}),
+		Shader<Shader_type::fragment>(std::filesystem::path{"/home/michael/coding/projects/gl_lib/src/fragment_shader.glsl"})
 	);
 
 	Vertex_array_object<Vertex, With_ebo::yes, unsigned int> vao(vertices, GL_STATIC_DRAW, indices);
@@ -55,8 +55,7 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		shader_program.use();
-		vao.bind();
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		vao.draw();
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

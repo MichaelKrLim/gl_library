@@ -1,20 +1,22 @@
 #include <print>
 #include <string>
 
-template <std::size_t... shader_variants>
+template <Shader_type... shader_variants>
 Shader_program::Shader_program(Shader<shader_variants>... shaders) noexcept
 	:	gl_id(glCreateProgram())
 {
 	template for(const auto& shader : {shaders...})
 		glAttachShader(gl_id, shader.gl_id);
 
-	int success;
-	std::string error_message(512, ' ');
 	glLinkProgram(gl_id);
+	int success;
 	glGetProgramiv(gl_id, GL_LINK_STATUS, &success);
 	if(!success)
 	{
-		glGetProgramInfoLog(gl_id, 512, NULL, error_message.data());
+		GLint buffer_size=0;
+		glGetProgramiv(gl_id, GL_INFO_LOG_LENGTH, &buffer_size);
+		std::string error_message(buffer_size, ' ');
+		glGetProgramInfoLog(gl_id, buffer_size, NULL, error_message.data());
 		std::println(stderr, "Error linking shader: {}", error_message);
 	}
 }

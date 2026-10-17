@@ -6,7 +6,9 @@
 #include <cstdint>
 #include <filesystem>
 
-template <std::size_t shader_variant>
+enum class Shader_type { vertex=GL_VERTEX_SHADER, fragment=GL_FRAGMENT_SHADER };
+
+template <Shader_type shader_variant>
 class Shader
 {
 	public:

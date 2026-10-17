@@ -4,7 +4,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(cmake/CPM.cmake)
 
-CPMAddPackage("gh:vimpunk/mio#master")
+CPMAddPackage(URI "gh:vimpunk/mio#master" SYSTEM YES)
 CPMAddPackage("gh:glfw/glfw#3.3.10")
 find_package(OpenGL REQUIRED)
 add_library(glad STATIC glad.c)
