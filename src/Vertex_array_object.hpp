@@ -1,8 +1,6 @@
 #ifndef Vertex_array_object_hpp_INCLUDED
 #define Vertex_array_object_hpp_INCLUDED
 
-#include "Vertex.hpp"
-
 #include <glad/glad.h>
 
 #include <iostream>

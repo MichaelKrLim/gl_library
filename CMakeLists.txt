@@ -15,6 +15,8 @@ add_executable(target
 	src/Shader_program.hpp
 	src/Vertex_array_object.hpp
 	src/Shader.hpp
+	src/stb_image.cpp
+	src/Texture.cpp src/Texture.hpp
 )
 set_target_properties(target PROPERTIES
 	CXX_STANDARD 26

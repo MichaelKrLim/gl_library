@@ -11,11 +11,11 @@ Vertex_array_object<Vertex_type, uses_ebo, Ebo_index_type>::Vertex_array_object(
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex)*vertices.size(), vertices.data(), draw_mode);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex_type)*vertices.size(), vertices.data(), draw_mode);
 
 	template for(constexpr std::meta::info member_info : std::define_static_array(std::meta::nonstatic_data_members_of(^^Vertex_type, std::meta::access_context::unchecked())))
 	{
-		glVertexAttribPointer(next_free_vertex_attribute, size_of(member_info)/sizeof(float), GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offset_of(member_info).bytes));
+		glVertexAttribPointer(next_free_vertex_attribute, size_of(member_info)/sizeof(float), GL_FLOAT, GL_FALSE, sizeof(Vertex_type), reinterpret_cast<void*>(offset_of(member_info).bytes));
 		glEnableVertexAttribArray(next_free_vertex_attribute++);
 	}
 

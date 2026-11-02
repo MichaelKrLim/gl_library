@@ -1,5 +1,6 @@
 #include "Shader.hpp"
 #include "Shader_program.hpp"
+#include "Texture.hpp"
 #include "Vertex_array_object.hpp"
 
 #include <glad/glad.h>
@@ -30,11 +31,16 @@ int main()
 	}
 	glViewport(0, 0, 800, 600);
 
+	struct [[gnu::packed]] vec2 { float x=0.0f,y=0.0f; };
+	struct [[gnu::packed]] vec3 { float x=0.0f,y=0.0f,z=0.0f; };
+	struct [[gnu::packed]] vec4 { float r=0.0f,g=0.0f,b=0.0f,w=0.0f; };
+	struct Vertex { vec3 position; vec4 colour; vec2 texture_coord; };
+
 	std::vector<Vertex> vertices = {
-		Vertex{.position={ 0.5f,  0.5f, 0.0f}, .colour={1.0f,1.0f,1.0f,1.0f}},  // top right
-		Vertex{.position={ 0.5f, -0.5f, 0.0f}, .colour={0.34f,0.402f,0.44f,1.0f}},  // bottom right
-		Vertex{.position={-0.5f, -0.5f, 0.0f}, .colour={0.3423f,1.0f,1.0f,1.0f}},  // bottom left
-		Vertex{.position={-0.5f,  0.5f, 0.0f}, .colour={0.234f,0.23423f,1.0f,1.0f}}   // top left 
+		Vertex{.position={ 0.5f,  0.5f, 0.0f}, .colour={1.0f,1.0f,1.0f,1.0f},       .texture_coord={1.0f, 1.0f}},  // top right
+		Vertex{.position={ 0.5f, -0.5f, 0.0f}, .colour={0.34f,0.402f,0.44f,1.0f},   .texture_coord={1.0f, 0.0f}},  // bottom right
+		Vertex{.position={-0.5f, -0.5f, 0.0f}, .colour={0.3423f,1.0f,1.0f,1.0f},    .texture_coord={0.0f, 0.0f}},  // bottom left
+		Vertex{.position={-0.5f,  0.5f, 0.0f}, .colour={0.234f,0.23423f,1.0f,1.0f}, .texture_coord={0.0f, 1.0f}}   // top left 
 	};
 
 	std::vector<unsigned int> indices = {
@@ -47,6 +53,16 @@ int main()
 		Shader<Shader_type::fragment>(std::filesystem::path{"/home/michael/coding/projects/gl_lib/src/fragment_shader.glsl"})
 	);
 
+
+	Texture texture(std::filesystem::path{"../src/example_texture.jpg"});
+	texture.set_params([]
+	{
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	});
+
 	Vertex_array_object<Vertex, With_ebo::yes, unsigned int> vao(vertices, GL_STATIC_DRAW, indices);
 
 	while(!glfwWindowShouldClose(window))
@@ -54,6 +70,7 @@ int main()
 		glClearColor(0.2f, 0.3f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		texture.bind();
 		shader_program.use();
 		vao.draw();
 
