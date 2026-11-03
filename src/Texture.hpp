@@ -1,3 +1,6 @@
+#ifndef Texture_hpp_INCLUDED
+#define Texture_hpp_INCLUDED
+
 #include <glad/glad.h>
 
 #include <filesystem>
@@ -10,8 +13,8 @@ class Texture
 
 	void bind() noexcept { glBindTexture(GL_TEXTURE_2D, gl_id); }
 	void unbind() noexcept { glBindTexture(GL_TEXTURE_2D, 0); }
-	template <typename unnamable>
-	void set_params(const unnamable& lambda)
+	template <std::invocable T>
+	void set_params(const T& lambda)
 	{
 		bind();
 		lambda();
@@ -22,3 +25,5 @@ class Texture
 
 	unsigned gl_id;
 };
+
+#endif // Texture_hpp_INCLUDED

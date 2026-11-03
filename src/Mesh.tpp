@@ -2,7 +2,7 @@
 #include <meta>
 
 template<typename Vertex_type, With_ebo uses_ebo, std::unsigned_integral Ebo_index_type>
-Vertex_array_object<Vertex_type, uses_ebo, Ebo_index_type>::Vertex_array_object(std::span<const Vertex_type> vertices, std::size_t draw_mode, std::span<const Ebo_index_type> indices) noexcept
+Mesh<Vertex_type, uses_ebo, Ebo_index_type>::Mesh(std::span<const Vertex_type> vertices, std::size_t draw_mode, std::span<const Ebo_index_type> indices) noexcept
 		:	next_free_vertex_attribute(0)
 {
 	glGenVertexArrays(1, &vao);
@@ -39,7 +39,7 @@ Vertex_array_object<Vertex_type, uses_ebo, Ebo_index_type>::Vertex_array_object(
 }
 
 template<typename Vertex_type, With_ebo uses_ebo, std::unsigned_integral Ebo_index_type>
-Vertex_array_object<Vertex_type, uses_ebo, Ebo_index_type>::~Vertex_array_object() noexcept
+Mesh<Vertex_type, uses_ebo, Ebo_index_type>::~Mesh() noexcept
 {
 	glDeleteVertexArrays(1, &vao);
 	glDeleteBuffers(1, &vbo);
@@ -47,7 +47,7 @@ Vertex_array_object<Vertex_type, uses_ebo, Ebo_index_type>::~Vertex_array_object
 }
 
 template<typename Vertex_type, With_ebo uses_ebo, std::unsigned_integral Ebo_index_type>
-void Vertex_array_object<Vertex_type, uses_ebo, Ebo_index_type>::draw() noexcept
+void Mesh<Vertex_type, uses_ebo, Ebo_index_type>::draw() noexcept
 {
 	glBindVertexArray(vao);
 	if constexpr(uses_ebo==With_ebo::yes)

@@ -3,7 +3,6 @@
 
 #include <glad/glad.h>
 
-#include <iostream>
 #include <span>
 
 enum class With_ebo
@@ -13,15 +12,14 @@ enum class With_ebo
 
 // please use [[gnu::packed]] if possible, thanks!
 template<typename Vertex_type, With_ebo uses_ebo, std::unsigned_integral Ebo_index_type>
-class Vertex_array_object
+class Mesh
 {
 	public:
 
 	// the order in which you layout your attributes in memory determine the vertex attribute id passed to GLSL
-	explicit Vertex_array_object(std::span<const Vertex_type> vertex_data, std::size_t draw_mode=GL_STATIC_DRAW, std::span<const Ebo_index_type> indices={}) noexcept;
-	~Vertex_array_object() noexcept;
+	explicit Mesh(std::span<const Vertex_type> vertex_data, std::size_t draw_mode=GL_STATIC_DRAW, std::span<const Ebo_index_type> indices={}) noexcept;
+	~Mesh() noexcept;
 
-	void bind() noexcept;
 	void draw() noexcept;
 
 	private:
@@ -31,6 +29,12 @@ class Vertex_array_object
 	std::size_t num_vertices_to_draw=0;
 };
 
-#include "Vertex_array_object.tpp"
+template<typename... Ts>
+void detail_is_Mesh(Mesh<Ts...>) {}
+
+template <typename T>
+concept is_Mesh = requires { detail_is_Mesh(std::declval<T>()); };
+
+#include "Mesh.tpp"
 
 #endif // Vertex_array_object_hpp_INCLUDED

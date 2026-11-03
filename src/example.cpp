@@ -1,12 +1,14 @@
-#include "Shader.hpp"
+#include "Drawable.hpp"
+#include "Mesh.hpp"
 #include "Shader_program.hpp"
+#include "Shader.hpp"
 #include "Texture.hpp"
-#include "Vertex_array_object.hpp"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <filesystem>
+#include <iostream>
 #include <vector>
 
 int main()
@@ -15,7 +17,8 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	GLFWwindow* window=glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	GLFWwindow* window=glfwCreateWindow(800, 600, "gl_library", NULL, NULL);
 	if(window==NULL)
 	{
 		std::cout<<"Failed to create GLFW window"<<std::endl;
@@ -49,8 +52,8 @@ int main()
 	};
 
 	Shader_program shader_program(
-		Shader<Shader_type::vertex>(std::filesystem::path{"/home/michael/coding/projects/gl_lib/src/vertex_shader.glsl"}),
-		Shader<Shader_type::fragment>(std::filesystem::path{"/home/michael/coding/projects/gl_lib/src/fragment_shader.glsl"})
+		Shader<Shader_type::vertex>(std::filesystem::path{"../src/vertex_shader.glsl"}),
+		Shader<Shader_type::fragment>(std::filesystem::path{"../src/fragment_shader.glsl"})
 	);
 
 
@@ -63,16 +66,17 @@ int main()
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	});
 
-	Vertex_array_object<Vertex, With_ebo::yes, unsigned int> vao(vertices, GL_STATIC_DRAW, indices);
+	Mesh<Vertex, With_ebo::yes, unsigned int> mesh(vertices, GL_STATIC_DRAW, indices);
+
+	Drawable drawable(mesh, texture);
 
 	while(!glfwWindowShouldClose(window))
 	{
 		glClearColor(0.2f, 0.3f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		texture.bind();
 		shader_program.use();
-		vao.draw();
+		drawable.draw();
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

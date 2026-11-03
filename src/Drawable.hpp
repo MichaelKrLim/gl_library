@@ -1,0 +1,27 @@
+#ifndef Drawable_hpp_INCLUDED
+#define Drawable_hpp_INCLUDED
+
+#include "Mesh.hpp"
+#include "Texture.hpp"
+
+template <is_Mesh Mesh> 
+class Drawable
+{
+        public:
+
+	explicit Drawable(Mesh mesh, Texture texture) noexcept;
+
+	void draw() noexcept;
+
+    	private:
+
+	Mesh mesh;
+	Texture texture;
+};
+
+template <is_Mesh Mesh>
+Drawable(Mesh, Texture) -> Drawable<Mesh>;
+
+#include "Drawable.tpp"
+
+#endif // Drawable_hpp_INCLUDED

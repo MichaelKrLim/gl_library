@@ -13,10 +13,11 @@ target_include_directories(glad PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/glad")
 add_executable(target
 	src/example.cpp
 	src/Shader_program.hpp
-	src/Vertex_array_object.hpp
+	src/Mesh.hpp
 	src/Shader.hpp
 	src/stb_image.cpp
 	src/Texture.cpp src/Texture.hpp
+	src/Drawable.hpp
 )
 set_target_properties(target PROPERTIES
 	CXX_STANDARD 26
