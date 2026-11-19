@@ -9,6 +9,7 @@
 
 #include <filesystem>
 #include <iostream>
+#include <utility>
 #include <vector>
 
 int main()
@@ -68,7 +69,7 @@ int main()
 
 	Mesh<Vertex, With_ebo::yes, unsigned int> mesh(vertices, GL_STATIC_DRAW, indices);
 
-	Drawable drawable(mesh, texture);
+	Drawable drawable(std::move(mesh), std::move(texture));
 
 	while(!glfwWindowShouldClose(window))
 	{

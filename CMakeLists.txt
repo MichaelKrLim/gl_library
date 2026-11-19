@@ -29,8 +29,9 @@ target_compile_options(target PRIVATE
 	-freflection
 	-Wextra
 	-pedantic
-	-Og
-	-Wfatal-errors
+	-Og # for now
+	-fmax-errors=1
+        -fdiagnostics-all-candidates
 )
 
 target_link_libraries(target PRIVATE glfw glad OpenGL::GL mio::mio)

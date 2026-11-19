@@ -40,13 +40,17 @@ template <Shader_type shader_variant>
 Shader<shader_variant>& Shader<shader_variant>::operator=(Shader&& other) noexcept
 {
 	if(gl_id!=0)
-		glDeleteShader(gl_id);
+    		glDeleteShader(gl_id);
 
 	gl_id=other.gl_id;
+	other.gl_id=0;
+
+	return *this;
 }
 
 template <Shader_type shader_variant>
 Shader<shader_variant>::Shader(Shader&& other) noexcept
 {
 	gl_id=other.gl_id;
+	other.gl_id=0;
 }

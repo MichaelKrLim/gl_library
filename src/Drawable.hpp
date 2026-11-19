@@ -19,9 +19,6 @@ class Drawable
 	Texture texture;
 };
 
-template <is_Mesh Mesh>
-Drawable(Mesh, Texture) -> Drawable<Mesh>;
-
 #include "Drawable.tpp"
 
 #endif // Drawable_hpp_INCLUDED

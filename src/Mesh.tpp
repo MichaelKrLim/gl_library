@@ -55,3 +55,29 @@ void Mesh<Vertex_type, uses_ebo, Ebo_index_type>::draw() noexcept
 	else
 		glDrawArrays(GL_TRIANGLES, 0, num_vertices_to_draw);
 }
+
+
+template<typename Vertex_type, With_ebo uses_ebo, std::unsigned_integral Ebo_index_type>
+Mesh<Vertex_type, uses_ebo, Ebo_index_type>& Mesh<Vertex_type, uses_ebo, Ebo_index_type>::operator=(Mesh&& rhs) noexcept
+{
+	// glDelete(0) does nothing
+	glDeleteVertexArrays(1, &vao);
+	glDeleteBuffers(1, &vbo);
+	glDeleteBuffers(1, &ebo);
+
+	vao=rhs.vao;
+	vbo=rhs.vbo;
+	ebo=rhs.ebo;
+
+	rhs.vbo=rhs.ebo=rhs.vao=0;
+}
+
+template<typename Vertex_type, With_ebo uses_ebo, std::unsigned_integral Ebo_index_type>
+Mesh<Vertex_type, uses_ebo, Ebo_index_type>::Mesh(Mesh&& other) noexcept
+{
+	vao=other.vao;
+	vbo=other.vbo;
+	ebo=other.ebo;
+
+	other.vbo=other.ebo=other.vao=0;
+}

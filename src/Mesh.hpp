@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 
 #include <span>
+#include <meta>
 
 enum class With_ebo
 {
@@ -17,8 +18,15 @@ class Mesh
 	public:
 
 	// the order in which you layout your attributes in memory determine the vertex attribute id passed to GLSL
+	// eg. struct Vertex_type { int a1; (layout=0) int a2; (layout=1)};
 	explicit Mesh(std::span<const Vertex_type> vertex_data, std::size_t draw_mode=GL_STATIC_DRAW, std::span<const Ebo_index_type> indices={}) noexcept;
 	~Mesh() noexcept;
+
+	Mesh& operator=(const Mesh& rhs)=delete;
+	Mesh(const Mesh& other)=delete;
+
+	Mesh& operator=(Mesh&& rhs) noexcept;
+	explicit Mesh(Mesh&& other) noexcept;
 
 	void draw() noexcept;
 
@@ -29,11 +37,8 @@ class Mesh
 	std::size_t num_vertices_to_draw=0;
 };
 
-template<typename... Ts>
-void detail_is_Mesh(Mesh<Ts...>) {}
-
 template <typename T>
-concept is_Mesh = requires { detail_is_Mesh(std::declval<T>()); };
+concept is_Mesh = template_of(^^T)==^^Mesh;
 
 #include "Mesh.tpp"
 
