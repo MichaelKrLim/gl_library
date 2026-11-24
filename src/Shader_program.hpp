@@ -5,6 +5,8 @@
 
 #include "glad/glad.h"
 
+struct Uniform_location { unsigned location; };
+
 class Shader_program
 {
 	public:
@@ -20,6 +22,9 @@ class Shader_program
 	explicit Shader_program(Shader_program&& other) noexcept;
 
 	void use() noexcept;
+
+	Uniform_location get_uniform_location(std::string name) noexcept;
+	void set_uniform(const Uniform_location& uniform, const auto& value) noexcept;
 
 	private:
 

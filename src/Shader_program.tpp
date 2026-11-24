@@ -44,3 +44,13 @@ void Shader_program::use() noexcept
 {
 	glUseProgram(gl_id);
 }
+
+Uniform_location Shader_program::get_uniform_location(std::string name) noexcept
+{
+	return Uniform_location(glGetUniformLocation(gl_id, name.c_str()));
+}
+
+void Shader_program::set_uniform(const Uniform_location& uniform, const auto& value) noexcept
+{
+	glUniformMatrix4fv(uniform.location, 1, GL_FALSE, glm::value_ptr(value));
+}

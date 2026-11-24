@@ -6,9 +6,11 @@ layout (location = 2) in vec2 a_texture_coord;
 out vec4 v_color;
 out vec2 v_texture_coord;
 
+uniform mat4 projection;
+
 void main()
 {
-	gl_Position = vec4(a_pos.x, a_pos.y, a_pos.z, 1.0);
+	gl_Position = projection*vec4(a_pos.x, a_pos.y, a_pos.z, 1.0);
 	v_color=a_color;
 	v_texture_coord=a_texture_coord;
 }

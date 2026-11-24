@@ -6,6 +6,10 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include "glm/gtx/string_cast.hpp"
 
 #include <filesystem>
 #include <iostream>
@@ -35,16 +39,13 @@ int main()
 	}
 	glViewport(0, 0, 800, 600);
 
-	struct [[gnu::packed]] vec2 { float x=0.0f,y=0.0f; };
-	struct [[gnu::packed]] vec3 { float x=0.0f,y=0.0f,z=0.0f; };
-	struct [[gnu::packed]] vec4 { float r=0.0f,g=0.0f,b=0.0f,w=0.0f; };
-	struct Vertex { vec3 position; vec4 colour; vec2 texture_coord; };
+	struct Vertex { glm::vec3 position; glm::vec4 colour; glm::vec2 texture_coord; };
 
 	std::vector<Vertex> vertices = {
-		Vertex{.position={ 0.5f,  0.5f, 0.0f}, .colour={1.0f,1.0f,1.0f,1.0f},       .texture_coord={1.0f, 1.0f}},  // top right
-		Vertex{.position={ 0.5f, -0.5f, 0.0f}, .colour={0.34f,0.402f,0.44f,1.0f},   .texture_coord={1.0f, 0.0f}},  // bottom right
-		Vertex{.position={-0.5f, -0.5f, 0.0f}, .colour={0.3423f,1.0f,1.0f,1.0f},    .texture_coord={0.0f, 0.0f}},  // bottom left
-		Vertex{.position={-0.5f,  0.5f, 0.0f}, .colour={0.234f,0.23423f,1.0f,1.0f}, .texture_coord={0.0f, 1.0f}}   // top left 
+		Vertex{.position={ 480.0f,  120.0f, 0.0f}, .colour={1.0f,1.0f,1.0f,1.0f},       .texture_coord={1.0f, 1.0f}},  // top right
+		Vertex{.position={ 480.0f,  360.0f, 0.0f}, .colour={0.34f,0.402f,0.44f,1.0f},   .texture_coord={1.0f, 0.0f}},  // bottom right
+		Vertex{.position={ 160.0f,  360.0f, 0.0f}, .colour={0.3423f,1.0f,1.0f,1.0f},    .texture_coord={0.0f, 0.0f}},  // bottom left
+		Vertex{.position={ 160.0f,  120.0f, 0.0f}, .colour={0.234f,0.23423f,1.0f,1.0f}, .texture_coord={0.0f, 1.0f}}   // top left 
 	};
 
 	std::vector<unsigned int> indices = {
@@ -56,7 +57,6 @@ int main()
 		Shader<Shader_type::vertex>(std::filesystem::path{"../src/vertex_shader.glsl"}),
 		Shader<Shader_type::fragment>(std::filesystem::path{"../src/fragment_shader.glsl"})
 	);
-
 
 	Texture texture(std::filesystem::path{"../src/example_texture.jpg"});
 	texture.set_params([]
@@ -71,12 +71,16 @@ int main()
 
 	Drawable drawable(std::move(mesh), std::move(texture));
 
+	glm::mat4 ortho=glm::ortho(0.0f, 640.0f, 480.0f, 0.0f, 0.0f, 1000.0f);
+	shader_program.use();
+	const auto projection_uniform = shader_program.get_uniform_location("projection");
+	shader_program.set_uniform(projection_uniform, ortho);
+
 	while(!glfwWindowShouldClose(window))
 	{
 		glClearColor(0.2f, 0.3f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		shader_program.use();
 		drawable.draw();
 
 		glfwSwapBuffers(window);

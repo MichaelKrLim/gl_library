@@ -7,13 +7,13 @@
 template <is_Mesh Mesh> 
 class Drawable
 {
-        public:
+	public:
 
 	explicit Drawable(Mesh mesh, Texture texture) noexcept;
 
 	void draw() noexcept;
 
-    	private:
+	private:
 
 	Mesh mesh;
 	Texture texture;

@@ -26,7 +26,7 @@ class Mesh
 	Mesh(const Mesh& other)=delete;
 
 	Mesh& operator=(Mesh&& rhs) noexcept;
-	explicit Mesh(Mesh&& other) noexcept;
+	Mesh(Mesh&& other) noexcept;
 
 	void draw() noexcept;
 

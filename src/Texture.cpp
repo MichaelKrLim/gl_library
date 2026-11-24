@@ -26,3 +26,17 @@ Texture::Texture(const std::filesystem::path& path) noexcept
 
 	unbind();
 }
+
+Texture::Texture(Texture&& other) noexcept
+{
+	gl_id=other.gl_id;
+	other.gl_id=0;
+}
+
+Texture& Texture::operator=(Texture&& rhs) noexcept
+{
+	glDeleteTextures(1, &gl_id);
+	gl_id=rhs.gl_id;
+	rhs.gl_id=0;
+	return *this;
+}

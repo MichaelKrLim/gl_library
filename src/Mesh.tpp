@@ -70,6 +70,9 @@ Mesh<Vertex_type, uses_ebo, Ebo_index_type>& Mesh<Vertex_type, uses_ebo, Ebo_ind
 	ebo=rhs.ebo;
 
 	rhs.vbo=rhs.ebo=rhs.vao=0;
+
+	next_free_vertex_attribute=rhs.next_free_vertex_attribute;
+	num_vertices_to_draw=rhs.num_vertices_to_draw;
 }
 
 template<typename Vertex_type, With_ebo uses_ebo, std::unsigned_integral Ebo_index_type>
@@ -80,4 +83,7 @@ Mesh<Vertex_type, uses_ebo, Ebo_index_type>::Mesh(Mesh&& other) noexcept
 	ebo=other.ebo;
 
 	other.vbo=other.ebo=other.vao=0;
+
+	next_free_vertex_attribute=other.next_free_vertex_attribute;
+	num_vertices_to_draw=other.num_vertices_to_draw;
 }
