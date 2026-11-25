@@ -10,6 +10,7 @@ class Drawable
 	public:
 
 	explicit Drawable(Mesh mesh, Texture texture) noexcept;
+	explicit Drawable(Texture texture) noexcept;
 
 	void draw() noexcept;
 

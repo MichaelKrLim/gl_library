@@ -2,6 +2,7 @@
 #define Vertex_array_object_hpp_INCLUDED
 
 #include <glad/glad.h>
+#include <glm/glm.hpp>
 
 #include <span>
 #include <meta>
