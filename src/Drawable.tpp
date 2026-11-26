@@ -1,3 +1,5 @@
+#include <glm/gtc/matrix_transform.hpp>
+
 #include <array>
 
 template <is_Mesh Mesh>
@@ -7,28 +9,35 @@ Drawable<Mesh>::Drawable(Mesh mesh, Texture texture) noexcept
 {}
 
 template <is_Mesh Mesh>
-Drawable<Mesh>::Drawable(Texture texture) noexcept
-	: texture(std::move(texture))
-{
-	struct Vertex { glm::vec2 position; };
-
-	std::array<Vertex, 6> vertices {
-		// triangle one
-		Vertex{ glm::vec2{-0.5f,  0.5f} },
-		Vertex{ glm::vec2{-0.5f, -0.5f} },
-		Vertex{ glm::vec2{ 0.5f,  0.5f} },
-		// triangle two
-		Vertex{ glm::vec2{-0.5f, -0.5f} },
-		Vertex{ glm::vec2{ 0.5f, -0.5f} },
-		Vertex{ glm::vec2{ 0.5f,  0.5f} }
-	};
-
-	mesh=Mesh(vertices);
-}
-
-template <is_Mesh Mesh>
-void Drawable<Mesh>::draw() noexcept
+void Drawable<Mesh>::draw() const noexcept
 {
 	texture.bind();
 	mesh.draw();
+}
+
+template <is_Mesh Mesh>
+void Drawable<Mesh>::scale(float scale_factor) noexcept
+{
+	// local space scale
+	model = glm::scale(model, glm::vec3(scale_factor, scale_factor, scale_factor));
+}
+
+template <is_Mesh Mesh>
+glm::vec3 Drawable<Mesh>::get_position() const noexcept
+{
+	return position;
+}
+
+template <is_Mesh Mesh>
+void Drawable<Mesh>::set_position(const glm::vec3& new_position) noexcept
+{
+	glm::vec3 translation = -position+new_position;
+	model = glm::translate(glm::mat4(1.0f),translation)*model;
+	position = new_position;
+}
+
+template<is_Mesh Mesh>
+glm::mat4 Drawable<Mesh>::get_model_matrix() noexcept
+{
+	return model;
 }

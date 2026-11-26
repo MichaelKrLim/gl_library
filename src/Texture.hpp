@@ -17,15 +17,17 @@ class Texture
 	Texture& operator=(Texture&& rhs) noexcept;
 	Texture(Texture&& other) noexcept;
 
-	void bind() noexcept { glBindTexture(GL_TEXTURE_2D, gl_id); }
-	void unbind() noexcept { glBindTexture(GL_TEXTURE_2D, 0); }
+	void bind() const noexcept { glBindTexture(GL_TEXTURE_2D, gl_id); }
+	void unbind() const noexcept { glBindTexture(GL_TEXTURE_2D, 0); }
 	template <std::invocable T>
-	void set_params(const T& lambda)
+	void set_params(const T& lambda) noexcept
 	{
 		bind();
 		lambda();
 		unbind();
 	}
+	GLint query_width() const noexcept;
+	GLint query_height() const noexcept;
 
 	private:
 

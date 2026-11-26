@@ -14,7 +14,6 @@
 #include <filesystem>
 #include <iostream>
 #include <utility>
-#include <vector>
 
 int main()
 {
@@ -22,8 +21,9 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	GLFWwindow* window=glfwCreateWindow(800, 600, "gl_library", NULL, NULL);
+	GLFWwindow* window=glfwCreateWindow(640, 480, "gl_library", NULL, NULL);
 	if(window==NULL)
 	{
 		std::cout<<"Failed to create GLFW window"<<std::endl;
@@ -37,21 +37,7 @@ int main()
 		glfwTerminate();
 		return EXIT_FAILURE;
 	}
-	glViewport(0, 0, 800, 600);
-
-	struct Vertex { glm::vec3 position; glm::vec4 colour; glm::vec2 texture_coord; };
-
-	std::vector<Vertex> vertices = {
-		Vertex{.position={ 480.0f,  120.0f, 0.0f}, .colour={1.0f,1.0f,1.0f,1.0f},       .texture_coord={1.0f, 1.0f}},  // top right
-		Vertex{.position={ 480.0f,  360.0f, 0.0f}, .colour={0.34f,0.402f,0.44f,1.0f},   .texture_coord={1.0f, 0.0f}},  // bottom right
-		Vertex{.position={ 160.0f,  360.0f, 0.0f}, .colour={0.3423f,1.0f,1.0f,1.0f},    .texture_coord={0.0f, 0.0f}},  // bottom left
-		Vertex{.position={ 160.0f,  120.0f, 0.0f}, .colour={0.234f,0.23423f,1.0f,1.0f}, .texture_coord={0.0f, 1.0f}}   // top left 
-	};
-
-	std::vector<unsigned int> indices = {
-		0, 1, 3,  // first Triangle
-		1, 2, 3   // second Triangle
-	};
+	glViewport(0, 0, 640, 480);
 
 	Shader_program shader_program(
 		Shader<Shader_type::vertex>(std::filesystem::path{"../src/vertex_shader.glsl"}),
@@ -67,14 +53,20 @@ int main()
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	});
 
-	Mesh<Vertex, With_ebo::yes, unsigned int> mesh(vertices, GL_STATIC_DRAW, indices);
+	const auto width = texture.query_width();
+	const auto height = texture.query_height();
+	Drawable drawable(quad_for_texture_of(width, height), std::move(texture));
+	drawable.scale(0.5f);
 
-	Drawable drawable(std::move(mesh), std::move(texture));
-
-	glm::mat4 ortho=glm::ortho(0.0f, 640.0f, 480.0f, 0.0f, 0.0f, 1000.0f);
+	glm::mat4 view  = glm::mat4(1.0f);
+	glm::mat4 ortho = glm::ortho(0.0f, 640.0f, 480.0f, 0.0f, 0.0f, 100.0f);
 	shader_program.use();
 	const auto projection_uniform = shader_program.get_uniform_location("projection");
 	shader_program.set_uniform(projection_uniform, ortho);
+	const auto model_uniform = shader_program.get_uniform_location("model");
+	shader_program.set_uniform(model_uniform, drawable.get_model_matrix());
+	const auto view_uniform = shader_program.get_uniform_location("view");
+	shader_program.set_uniform(view_uniform, view);
 
 	while(!glfwWindowShouldClose(window))
 	{

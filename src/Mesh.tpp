@@ -1,4 +1,7 @@
+#include <algorithm>
+#include <array>
 #include <concepts>
+#include <functional>
 #include <meta>
 
 template<typename Vertex_type, With_ebo uses_ebo, std::unsigned_integral Ebo_index_type>
@@ -47,7 +50,7 @@ Mesh<Vertex_type, uses_ebo, Ebo_index_type>::~Mesh() noexcept
 }
 
 template<typename Vertex_type, With_ebo uses_ebo, std::unsigned_integral Ebo_index_type>
-void Mesh<Vertex_type, uses_ebo, Ebo_index_type>::draw() noexcept
+void Mesh<Vertex_type, uses_ebo, Ebo_index_type>::draw() const noexcept
 {
 	glBindVertexArray(vao);
 	if constexpr(uses_ebo==With_ebo::yes)
@@ -55,7 +58,6 @@ void Mesh<Vertex_type, uses_ebo, Ebo_index_type>::draw() noexcept
 	else
 		glDrawArrays(GL_TRIANGLES, 0, num_vertices_to_draw);
 }
-
 
 template<typename Vertex_type, With_ebo uses_ebo, std::unsigned_integral Ebo_index_type>
 Mesh<Vertex_type, uses_ebo, Ebo_index_type>& Mesh<Vertex_type, uses_ebo, Ebo_index_type>::operator=(Mesh&& rhs) noexcept
@@ -86,4 +88,24 @@ Mesh<Vertex_type, uses_ebo, Ebo_index_type>::Mesh(Mesh&& other) noexcept
 
 	next_free_vertex_attribute=other.next_free_vertex_attribute;
 	num_vertices_to_draw=other.num_vertices_to_draw;
+}
+
+Cartesian_quad quad_for_texture_of(GLint width, GLint height)
+{
+	// we make the local space origin the top left of texture, this makes the mapping to world space easy
+
+	// clockwise from top left vertex
+	std::array<Cartesian_texture_vertex, 4> vertex_data {
+		Cartesian_texture_vertex{.position=glm::vec2{0,     0     }, .texture_coord=glm::vec2{0, 1}},
+		Cartesian_texture_vertex{.position=glm::vec2{width, 0     }, .texture_coord=glm::vec2{1, 1}},
+		Cartesian_texture_vertex{.position=glm::vec2{width, height}, .texture_coord=glm::vec2{1, 0}},
+		Cartesian_texture_vertex{.position=glm::vec2{0,     height}, .texture_coord=glm::vec2{0, 0}}
+	};
+
+	std::array<unsigned, 6> indices {
+		0, 1, 3,
+		1, 2, 3
+	};
+
+	return Cartesian_quad(vertex_data, GL_STATIC_DRAW, indices);
 }

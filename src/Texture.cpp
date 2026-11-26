@@ -40,3 +40,27 @@ Texture& Texture::operator=(Texture&& rhs) noexcept
 	rhs.gl_id=0;
 	return *this;
 }
+
+GLint Texture::query_width() const noexcept
+{
+	bind();
+	GLint width;
+
+	GLint base_image_mipmap_level=0;
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, base_image_mipmap_level, GL_TEXTURE_WIDTH, &width);
+	unbind();
+
+	return width;
+}
+
+GLint Texture::query_height() const noexcept
+{
+	bind();
+	GLint height;
+
+	GLint base_image_mipmap_level=0;
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, base_image_mipmap_level, GL_TEXTURE_HEIGHT, &height);
+	unbind();
+
+	return height;
+}

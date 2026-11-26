@@ -1,5 +1,7 @@
+#include <concepts>
 #include <print>
 #include <string>
+#include <type_traits>
 
 template <Shader_type... shader_variants>
 Shader_program::Shader_program(Shader<shader_variants>... shaders) noexcept
@@ -52,5 +54,7 @@ Uniform_location Shader_program::get_uniform_location(std::string name) noexcept
 
 void Shader_program::set_uniform(const Uniform_location& uniform, const auto& value) noexcept
 {
-	glUniformMatrix4fv(uniform.location, 1, GL_FALSE, glm::value_ptr(value));
+	using uniform_type=std::remove_cvref_t<decltype(value)>;
+	if constexpr(std::same_as<glm::mat4, uniform_type>)
+		glUniformMatrix4fv(uniform.location, 1, GL_FALSE, glm::value_ptr(value));
 }

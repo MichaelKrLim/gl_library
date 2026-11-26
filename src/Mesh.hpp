@@ -29,7 +29,7 @@ class Mesh
 	Mesh& operator=(Mesh&& rhs) noexcept;
 	Mesh(Mesh&& other) noexcept;
 
-	void draw() noexcept;
+	void draw() const noexcept;
 
 	private:
 
@@ -37,6 +37,11 @@ class Mesh
 	unsigned vao=0, vbo=0, ebo=0;
 	std::size_t num_vertices_to_draw=0;
 };
+
+struct Cartesian_texture_vertex { glm::vec2 position; glm::vec2 texture_coord; };
+using Cartesian_quad=Mesh<Cartesian_texture_vertex, With_ebo::yes, unsigned>;
+
+Cartesian_quad quad_for_texture_of(GLint width, GLint height);
 
 template <typename T>
 concept is_Mesh = template_of(^^T)==^^Mesh;
